@@ -18,4 +18,7 @@
         </activity>
     </application>
 
+    <!-- Normal permission, android grants this permission at install time -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
 </manifest>
