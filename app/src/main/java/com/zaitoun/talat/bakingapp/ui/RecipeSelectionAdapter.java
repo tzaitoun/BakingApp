@@ -20,11 +20,20 @@ public class RecipeSelectionAdapter extends RecyclerView.Adapter<RecipeSelection
     private ArrayList<Recipe> mRecipes;
     private Context mContext;
 
-    public RecipeSelectionAdapter(ArrayList<Recipe> recipes, Context context) {
+    private ItemOnClickListener mItemOnClickListener;
+
+    /* An interface that will notify the activity when an item is clicked */
+    public interface ItemOnClickListener {
+        void onItemClick(int position);
+    }
+
+    public RecipeSelectionAdapter(ArrayList<Recipe> recipes, Context context,
+                                  ItemOnClickListener itemOnClickListener) {
 
         /* Set the adapter's data */
         mRecipes = recipes;
         mContext = context;
+        mItemOnClickListener = itemOnClickListener;
     }
 
     @Override
@@ -52,7 +61,8 @@ public class RecipeSelectionAdapter extends RecyclerView.Adapter<RecipeSelection
         return mRecipes.size();
     }
 
-    public class RecipeSelectionViewHolder extends RecyclerView.ViewHolder {
+    public class RecipeSelectionViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener {
 
         private TextView mRecipeNameTextView;
         private ImageView mRecipeImageView;
@@ -65,6 +75,9 @@ public class RecipeSelectionAdapter extends RecyclerView.Adapter<RecipeSelection
             mRecipeNameTextView = (TextView) itemView.findViewById(R.id.tv_recipe_name);
             mRecipeImageView = (ImageView) itemView.findViewById(R.id.iv_recipe_image);
             mServingTextView = (TextView) itemView.findViewById(R.id.tv_serving_size);
+
+            /* Set an on click listener for each view holder we create */
+            itemView.setOnClickListener(this);
         }
 
         public void bind(int position) {
@@ -92,6 +105,13 @@ public class RecipeSelectionAdapter extends RecyclerView.Adapter<RecipeSelection
             else {
                 mRecipeImageView.setVisibility(View.GONE);
             }
+        }
+
+        /* When an item is clicked, call onItemClick */
+        @Override
+        public void onClick(View v) {
+            int clickedPosition = getAdapterPosition();
+            mItemOnClickListener.onItemClick(clickedPosition);
         }
     }
 }

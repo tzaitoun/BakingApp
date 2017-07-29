@@ -1,6 +1,7 @@
 package com.zaitoun.talat.bakingapp.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -26,12 +27,22 @@ import java.util.ArrayList;
 
 import static android.support.v7.widget.RecyclerView.*;
 
-public class RecipeSelectionActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<Recipe>> {
+public class RecipeSelectionActivity extends AppCompatActivity
+        implements LoaderManager.LoaderCallbacks<ArrayList<Recipe>>,
+        RecipeSelectionAdapter.ItemOnClickListener {
 
+    /* Keys for intent */
+    public static final String RECIPE_NAME_KEY = "RECIPE_NAME";
+    public static final String INGREDIENTS_ARRAY_KEY = "INGREDIENTS_ARRAY";
+    public static final String RECIPE_STEPS_ARRAY_KEY = "RECIPE_STEPS_ARRAY";
+
+    /* ID for the loader */
     private static final int RECIPE_LOADER_ID = 0;
 
     private RecyclerView mRecipeSelectionRecyclerView;
     private RecipeSelectionAdapter mRecipeSelectionAdapter;
+
+    private ArrayList<Recipe> mRecipes;
 
     private TextView mNoConnectionTextView;
     private TextView mErrorTextView;
@@ -79,9 +90,12 @@ public class RecipeSelectionActivity extends AppCompatActivity implements Loader
             mErrorTextView.setVisibility(INVISIBLE);
             mRefreshImageView.setVisibility(INVISIBLE);
 
+            /* Cache the recipes so we have access to them in the activity */
+            mRecipes = recipes;
+
             /* Initialize the adapter for the first time, if its not null, then it is already initialized */
             if (mRecipeSelectionAdapter == null) {
-                mRecipeSelectionAdapter = new RecipeSelectionAdapter(recipes, this);
+                mRecipeSelectionAdapter = new RecipeSelectionAdapter(recipes, this, this);
                 mRecipeSelectionRecyclerView.setAdapter(mRecipeSelectionAdapter);
             }
         }
@@ -124,6 +138,24 @@ public class RecipeSelectionActivity extends AppCompatActivity implements Loader
             mNoConnectionTextView.setVisibility(VISIBLE);
             mRefreshImageView.setVisibility(VISIBLE);
         }
+    }
+
+    /* When a recipe is clicked in the RecyclerView, launch an intent */
+    @Override
+    public void onItemClick(int position) {
+
+        /* Get the recipe that was clicked */
+        Recipe recipe = mRecipes.get(position);
+
+        /* Create a new intent that will launch RecipeStepSelectionActivity */
+        Intent intent = new Intent(RecipeSelectionActivity.this, RecipeStepSelectionActivity.class);
+
+        /* Pass all the relevant data */
+        intent.putExtra(RECIPE_NAME_KEY, recipe.getRecipeName());
+        intent.putParcelableArrayListExtra(INGREDIENTS_ARRAY_KEY, recipe.getIngredients());
+        intent.putParcelableArrayListExtra(RECIPE_STEPS_ARRAY_KEY, recipe.getRecipeSteps());
+
+        startActivity(intent);
     }
 
     /**
