@@ -20,4 +20,24 @@ public class Recipe {
         this.servings = servings;
         this.image = image;
     }
+
+    public String getRecipeName() {
+        return recipeName;
+    }
+
+    public ArrayList<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
+    public ArrayList<RecipeStep> getRecipeSteps() {
+        return recipeSteps;
+    }
+
+    public int getServings() {
+        return servings;
+    }
+
+    public String getImage() {
+        return image;
+    }
 }
