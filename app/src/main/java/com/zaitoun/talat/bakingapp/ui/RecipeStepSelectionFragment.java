@@ -1,6 +1,7 @@
 package com.zaitoun.talat.bakingapp.ui;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,9 +20,30 @@ import java.util.ArrayList;
 
 import static android.support.v7.widget.RecyclerView.*;
 
-public class RecipeStepSelectionFragment extends Fragment {
+public class RecipeStepSelectionFragment extends Fragment implements RecipeStepSelectionAdapter.RecipeStepClickListener {
+
+    private RecipeStepSelectionCallback mCallback;
 
     public RecipeStepSelectionFragment(){}
+
+    public interface RecipeStepSelectionCallback {
+        void onRecipeStepSelectionClick(int position);
+    }
+
+    /* Override onAttach to make sure that the container activity has implemented the callback */
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        // This makes sure that the host activity has implemented the callback interface
+        // If not, it throws an exception
+        try {
+            mCallback = (RecipeStepSelectionCallback) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement RecipeStepSelectionCallback");
+        }
+    }
 
     @Nullable
     @Override
@@ -54,7 +76,7 @@ public class RecipeStepSelectionFragment extends Fragment {
 
                 /* Create a new adapter and pass the data to it */
                 RecipeStepSelectionAdapter adapter =
-                        new RecipeStepSelectionAdapter(ingredients, recipeSteps, getContext());
+                        new RecipeStepSelectionAdapter(ingredients, recipeSteps, getContext(), this);
 
                 /* Set the recycler view's adapter */
                 recyclerView.setAdapter(adapter);
@@ -62,5 +84,10 @@ public class RecipeStepSelectionFragment extends Fragment {
         }
 
         return view;
+    }
+
+    @Override
+    public void onRecipeStepClickListener(int position) {
+        mCallback.onRecipeStepSelectionClick(position);
     }
 }

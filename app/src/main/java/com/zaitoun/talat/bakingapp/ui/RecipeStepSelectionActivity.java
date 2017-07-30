@@ -13,7 +13,8 @@ import java.util.ArrayList;
 
 import static com.zaitoun.talat.bakingapp.ui.RecipeSelectionActivity.*;
 
-public class RecipeStepSelectionActivity extends AppCompatActivity {
+public class RecipeStepSelectionActivity extends AppCompatActivity
+        implements RecipeStepSelectionFragment.RecipeStepSelectionCallback {
 
     /* Keys for bundle */
     public static final String INGREDIENTS_ARRAY_BUNDLE_KEY = "INGREDIENTS_BUNDLE_KEY";
@@ -59,5 +60,10 @@ public class RecipeStepSelectionActivity extends AppCompatActivity {
                         .commit();
             }
         }
+    }
+
+    @Override
+    public void onRecipeStepSelectionClick(int position) {
+        // Launch new activity
     }
 }

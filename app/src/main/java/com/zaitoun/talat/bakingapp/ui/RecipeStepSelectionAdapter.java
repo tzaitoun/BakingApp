@@ -15,6 +15,8 @@ import com.zaitoun.talat.bakingapp.model.RecipeStep;
 
 import java.util.ArrayList;
 
+import static com.zaitoun.talat.bakingapp.ui.RecipeSelectionAdapter.*;
+
 public class RecipeStepSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     /* These are to differentiate between the 2 different views */
@@ -26,15 +28,22 @@ public class RecipeStepSelectionAdapter extends RecyclerView.Adapter<RecyclerVie
      */
     private static final int RESERVED_VIEW_FOR_INGREDIENTS = 1;
 
+    private RecipeStepClickListener mRecipeStepClickListener;
+
     private ArrayList<Ingredient> mIngredients;
     private ArrayList<RecipeStep> mRecipeSteps;
     private Context mContext;
 
     public RecipeStepSelectionAdapter(ArrayList<Ingredient> ingredients, ArrayList<RecipeStep> recipeSteps,
-                                      Context context) {
+                                      Context context, RecipeStepClickListener recipeStepClickListener) {
         mIngredients = ingredients;
         mRecipeSteps = recipeSteps;
         mContext = context;
+        mRecipeStepClickListener = recipeStepClickListener;
+    }
+
+    public interface RecipeStepClickListener {
+        public void onRecipeStepClickListener(int position);
     }
 
     @Override
@@ -121,12 +130,14 @@ public class RecipeStepSelectionAdapter extends RecyclerView.Adapter<RecyclerVie
         }
     }
 
-    public class RecipeStepSelectionViewHolder extends RecyclerView.ViewHolder {
+    public class RecipeStepSelectionViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView mRecipeStepShortDescriptionTextView;
 
         public RecipeStepSelectionViewHolder(View itemView) {
             super(itemView);
+
+            itemView.setOnClickListener(this);
 
             mRecipeStepShortDescriptionTextView = (TextView) itemView.findViewById(R.id.tv_recipe_step_short_description);
         }
@@ -134,6 +145,12 @@ public class RecipeStepSelectionAdapter extends RecyclerView.Adapter<RecyclerVie
         public void bind(int position) {
             mRecipeStepShortDescriptionTextView.setText(position + ") " + mRecipeSteps
                     .get(position - RESERVED_VIEW_FOR_INGREDIENTS).getShortDescription());
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            mRecipeStepClickListener.onRecipeStepClickListener(position);
         }
     }
 }
