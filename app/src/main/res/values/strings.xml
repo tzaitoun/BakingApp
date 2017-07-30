@@ -4,4 +4,6 @@
     <!-- Error handling strings-->
     <string name="no_connection">No Internet Connection</string>
     <string name="data_error">An Error Occurred</string>
+
+    <string name="ingredients">Ingredients</string>
 </resources>

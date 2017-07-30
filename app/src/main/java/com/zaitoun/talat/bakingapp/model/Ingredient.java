@@ -16,6 +16,18 @@ public class Ingredient implements Parcelable {
         this.measurementUnit = measurementUnit;
     }
 
+    public String getIngredientName() {
+        return ingredientName;
+    }
+
+    public double getQuantity() {
+        return quantity;
+    }
+
+    public String getMeasurementUnit() {
+        return measurementUnit;
+    }
+
     private Ingredient(Parcel in) {
         ingredientName = in.readString();
         quantity = in.readDouble();

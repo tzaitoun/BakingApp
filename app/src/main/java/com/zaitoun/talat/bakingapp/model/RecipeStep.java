@@ -18,6 +18,22 @@ public class RecipeStep implements Parcelable {
         this.thumbnailUrl = thumbnailUrl;
     }
 
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
+    }
+
     private RecipeStep(Parcel in) {
         shortDescription = in.readString();
         description = in.readString();
