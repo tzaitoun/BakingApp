@@ -12,6 +12,7 @@ import com.zaitoun.talat.bakingapp.model.RecipeStep;
 import java.util.ArrayList;
 
 import static com.zaitoun.talat.bakingapp.ui.RecipeSelectionActivity.*;
+import static com.zaitoun.talat.bakingapp.ui.RecipeStepSelectionAdapter.*;
 
 public class RecipeStepSelectionActivity extends AppCompatActivity
         implements RecipeStepSelectionFragment.RecipeStepSelectionCallback {
@@ -19,6 +20,11 @@ public class RecipeStepSelectionActivity extends AppCompatActivity
     /* Keys for bundle */
     public static final String INGREDIENTS_ARRAY_BUNDLE_KEY = "INGREDIENTS_BUNDLE_KEY";
     public static final String RECIPE_STEPS_ARRAY_BUNDLE_KEY = "RECIPE_STEPS_BUNDLE_KEY";
+
+    public static final String RECIPE_STEPS_ARRAY_INTENT_KEY = "RECIPE_STEPS_ARRAY_INTENT";
+    public static final String RECIPE_STEP_INTENT_KEY = "RECIPE_STEP_INTENT";
+
+    private ArrayList<RecipeStep> mRecipeSteps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +49,9 @@ public class RecipeStepSelectionActivity extends AppCompatActivity
                 ArrayList<RecipeStep> recipeSteps =
                         intentThatStartedActivity.getParcelableArrayListExtra(RECIPE_STEPS_ARRAY_KEY);
 
+                /* Cache the recipe steps because we need to pass them to the next activity */
+                mRecipeSteps = recipeSteps;
+
                 /* Create a new fragment */
                 RecipeStepSelectionFragment fragment = new RecipeStepSelectionFragment();
 
@@ -64,6 +73,14 @@ public class RecipeStepSelectionActivity extends AppCompatActivity
 
     @Override
     public void onRecipeStepSelectionClick(int position) {
-        // Launch new activity
+
+        /* Create an intent to launch RecipeStepViewActivity */
+        Intent intent = new Intent(RecipeStepSelectionActivity.this, RecipeStepViewActivity.class);
+
+        /* Put the relevant data */
+        intent.putParcelableArrayListExtra(RECIPE_STEPS_ARRAY_INTENT_KEY, mRecipeSteps);
+        intent.putExtra(RECIPE_STEP_INTENT_KEY, position - RESERVED_VIEW_FOR_INGREDIENTS);
+
+        startActivity(intent);
     }
 }

@@ -26,7 +26,7 @@ public class RecipeStepSelectionAdapter extends RecyclerView.Adapter<RecyclerVie
     /* There is a single view reserved for the ingredients in the recycler view, so it counts as 1
      * towards the item count.
      */
-    private static final int RESERVED_VIEW_FOR_INGREDIENTS = 1;
+    public static final int RESERVED_VIEW_FOR_INGREDIENTS = 1;
 
     private RecipeStepClickListener mRecipeStepClickListener;
 
