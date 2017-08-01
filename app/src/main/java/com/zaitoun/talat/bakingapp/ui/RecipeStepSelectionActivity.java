@@ -36,18 +36,18 @@ public class RecipeStepSelectionActivity extends AppCompatActivity
 
         /* Verify that the intent is valid */
         if (intentThatStartedActivity != null) {
-            if (intentThatStartedActivity.hasExtra(RECIPE_NAME_KEY) &&
-                    intentThatStartedActivity.hasExtra(INGREDIENTS_ARRAY_KEY) &&
-                    intentThatStartedActivity.hasExtra(RECIPE_STEPS_ARRAY_KEY)) {
+            if (intentThatStartedActivity.hasExtra(EXTRA_RECIPE_NAME) &&
+                    intentThatStartedActivity.hasExtra(EXTRA_INGREDIENTS_ARRAY) &&
+                    intentThatStartedActivity.hasExtra(EXTRA_RECIPE_STEPS_ARRAY)) {
 
                 /* Get the data from the intent */
-                String recipeName = intentThatStartedActivity.getStringExtra(RECIPE_NAME_KEY);
+                String recipeName = intentThatStartedActivity.getStringExtra(EXTRA_RECIPE_NAME);
 
                 ArrayList<Ingredient> ingredients =
-                        intentThatStartedActivity.getParcelableArrayListExtra(INGREDIENTS_ARRAY_KEY);
+                        intentThatStartedActivity.getParcelableArrayListExtra(EXTRA_INGREDIENTS_ARRAY);
 
                 ArrayList<RecipeStep> recipeSteps =
-                        intentThatStartedActivity.getParcelableArrayListExtra(RECIPE_STEPS_ARRAY_KEY);
+                        intentThatStartedActivity.getParcelableArrayListExtra(EXTRA_RECIPE_STEPS_ARRAY);
 
                 /* Cache the recipe steps because we need to pass them to the next activity */
                 mRecipeSteps = recipeSteps;

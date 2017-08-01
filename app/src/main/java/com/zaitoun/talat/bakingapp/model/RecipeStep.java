@@ -30,10 +30,6 @@ public class RecipeStep implements Parcelable {
         return videoUrl;
     }
 
-    public String getThumbnailUrl() {
-        return thumbnailUrl;
-    }
-
     private RecipeStep(Parcel in) {
         shortDescription = in.readString();
         description = in.readString();

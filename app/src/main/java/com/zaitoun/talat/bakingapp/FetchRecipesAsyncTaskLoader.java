@@ -3,6 +3,8 @@ package com.zaitoun.talat.bakingapp;
 
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.zaitoun.talat.bakingapp.model.Recipe;
 import com.zaitoun.talat.bakingapp.utils.RecipeJsonUtils;
@@ -16,8 +18,11 @@ public class FetchRecipesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<Recip
     /* An array used to cache our recipes */
     private ArrayList<Recipe> mRecipes;
 
-    public FetchRecipesAsyncTaskLoader(Context context) {
+    private ProgressBar mProgressBar;
+
+    public FetchRecipesAsyncTaskLoader(Context context, ProgressBar progressBar) {
         super(context);
+        mProgressBar = progressBar;
     }
 
     @Override
@@ -30,6 +35,8 @@ public class FetchRecipesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<Recip
 
         /* Else load it from online */
         else {
+            /* Show the progress bar */
+            mProgressBar.setVisibility(View.VISIBLE);
             forceLoad();
         }
     }

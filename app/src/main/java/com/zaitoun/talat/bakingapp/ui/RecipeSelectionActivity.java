@@ -4,37 +4,37 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.ImageView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.zaitoun.talat.bakingapp.FetchRecipesAsyncTaskLoader;
 import com.zaitoun.talat.bakingapp.R;
 import com.zaitoun.talat.bakingapp.model.Recipe;
-import com.zaitoun.talat.bakingapp.utils.RecipeJsonUtils;
-import com.zaitoun.talat.bakingapp.utils.RecipeNetworkUtils;
 
-import java.net.URL;
 import java.util.ArrayList;
 
 import static android.support.v7.widget.RecyclerView.*;
 
+/* This Activity is responsible for displaying the recipes from the network and allowing navigation
+ * to a recipe's details when a recipe is selected.
+ */
 public class RecipeSelectionActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<ArrayList<Recipe>>,
         RecipeSelectionAdapter.ItemOnClickListener {
 
-    /* Keys for intent */
-    public static final String RECIPE_NAME_KEY = "RECIPE_NAME";
-    public static final String INGREDIENTS_ARRAY_KEY = "INGREDIENTS_ARRAY";
-    public static final String RECIPE_STEPS_ARRAY_KEY = "RECIPE_STEPS_ARRAY";
+    /* Intent Extras */
+    public static final String EXTRA_RECIPE_NAME = "com.zaitoun.talat.bakingapp.RECIPE_NAME";
+    public static final String EXTRA_INGREDIENTS_ARRAY = "com.zaitoun.talat.bakingapp.INGREDIENTS_ARRAY";
+    public static final String EXTRA_RECIPE_STEPS_ARRAY = "com.zaitoun.talat.bakingapp.RECIPE_STEPS_ARRAY";
 
     /* ID for the loader */
     private static final int RECIPE_LOADER_ID = 0;
@@ -46,7 +46,7 @@ public class RecipeSelectionActivity extends AppCompatActivity
 
     private TextView mNoConnectionTextView;
     private TextView mErrorTextView;
-    private ImageView mRefreshImageView;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,14 +57,7 @@ public class RecipeSelectionActivity extends AppCompatActivity
         mRecipeSelectionRecyclerView = (RecyclerView) findViewById(R.id.rv_recipe_selection);
         mNoConnectionTextView = (TextView) findViewById(R.id.tv_no_connection);
         mErrorTextView = (TextView) findViewById(R.id.tv_error);
-        mRefreshImageView = (ImageView) findViewById(R.id.iv_refresh);
-
-        mRefreshImageView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadRecipes();
-            }
-        });
+        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
         /* Set up LayoutManager for RecyclerView */
         LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -75,11 +68,14 @@ public class RecipeSelectionActivity extends AppCompatActivity
 
     @Override
     public Loader<ArrayList<Recipe>> onCreateLoader(int id, Bundle args) {
-        return new FetchRecipesAsyncTaskLoader(this);
+        return new FetchRecipesAsyncTaskLoader(this, mProgressBar);
     }
 
     @Override
     public void onLoadFinished(Loader<ArrayList<Recipe>> loader, ArrayList<Recipe> recipes) {
+
+        /* Hide the progress bar since we retrieved our data */
+        mProgressBar.setVisibility(INVISIBLE);
 
         /* If there is no error in the data */
         if (recipes != null) {
@@ -88,7 +84,6 @@ public class RecipeSelectionActivity extends AppCompatActivity
 
             /* Hide error handling views */
             mErrorTextView.setVisibility(INVISIBLE);
-            mRefreshImageView.setVisibility(INVISIBLE);
 
             /* Cache the recipes so we have access to them in the activity */
             mRecipes = recipes;
@@ -106,7 +101,6 @@ public class RecipeSelectionActivity extends AppCompatActivity
 
             /* Show error handling views */
             mErrorTextView.setVisibility(VISIBLE);
-            mRefreshImageView.setVisibility(VISIBLE);
         }
     }
 
@@ -122,7 +116,6 @@ public class RecipeSelectionActivity extends AppCompatActivity
 
             /* Hide error handling views */
             mNoConnectionTextView.setVisibility(INVISIBLE);
-            mRefreshImageView.setVisibility(INVISIBLE);
             mErrorTextView.setVisibility(INVISIBLE);
 
             /* Initialize loader */
@@ -136,7 +129,6 @@ public class RecipeSelectionActivity extends AppCompatActivity
 
             /* Show error handling views */
             mNoConnectionTextView.setVisibility(VISIBLE);
-            mRefreshImageView.setVisibility(VISIBLE);
         }
     }
 
@@ -151,11 +143,31 @@ public class RecipeSelectionActivity extends AppCompatActivity
         Intent intent = new Intent(RecipeSelectionActivity.this, RecipeStepSelectionActivity.class);
 
         /* Pass all the relevant data */
-        intent.putExtra(RECIPE_NAME_KEY, recipe.getRecipeName());
-        intent.putParcelableArrayListExtra(INGREDIENTS_ARRAY_KEY, recipe.getIngredients());
-        intent.putParcelableArrayListExtra(RECIPE_STEPS_ARRAY_KEY, recipe.getRecipeSteps());
+        intent.putExtra(EXTRA_RECIPE_NAME, recipe.getRecipeName());
+        intent.putParcelableArrayListExtra(EXTRA_INGREDIENTS_ARRAY, recipe.getIngredients());
+        intent.putParcelableArrayListExtra(EXTRA_RECIPE_STEPS_ARRAY, recipe.getRecipeSteps());
 
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        /* When the refresh button is clicked, load the recipes from the network */
+        if (id == R.id.refresh) {
+            loadRecipes();
+            return  true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /**
