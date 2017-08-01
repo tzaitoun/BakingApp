@@ -15,7 +15,6 @@ import com.zaitoun.talat.bakingapp.model.RecipeStep;
 
 import java.util.ArrayList;
 
-import static com.zaitoun.talat.bakingapp.ui.RecipeSelectionAdapter.*;
 
 public class RecipeStepSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -49,9 +48,7 @@ public class RecipeStepSelectionAdapter extends RecyclerView.Adapter<RecyclerVie
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        /* Get the context and layout inflater */
-        Context context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
+        LayoutInflater inflater = LayoutInflater.from(mContext);
 
         /* Depending on the view type, return the appropriate inflated layout */
         switch (viewType) {

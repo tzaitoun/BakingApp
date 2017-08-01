@@ -15,24 +15,25 @@ import static com.zaitoun.talat.bakingapp.ui.RecipeStepViewActivity.*;
 
 public class RecipeStepDescriptionFragment extends Fragment {
 
-    private TextView mRecipeStepDescriptionTextView;
-
     public RecipeStepDescriptionFragment() {}
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+        /* Inflate the view from the layout */
         final View view = inflater.inflate(R.layout.fragment_recipe_step_description, container, false);
 
-        mRecipeStepDescriptionTextView = (TextView) view.findViewById(R.id.tv_recipe_step_description);
+        /* Get a reference to the view */
+        TextView recipeStepDescriptionTextView = (TextView) view.findViewById(R.id.tv_recipe_step_description);
 
         Bundle bundle = getArguments();
 
-        if (bundle != null && bundle.containsKey(RECIPE_STEP_DESCRIPTION_KEY)) {
-            String description = bundle.getString(RECIPE_STEP_DESCRIPTION_KEY);
+        /* Check if the bundle is valid */
+        if (bundle != null && bundle.containsKey(RECIPE_STEP_DESCRIPTION_BUNDLE_KEY)) {
+            String description = bundle.getString(RECIPE_STEP_DESCRIPTION_BUNDLE_KEY);
 
-            mRecipeStepDescriptionTextView.setText(description);
+            recipeStepDescriptionTextView.setText(description);
         }
 
         return view;

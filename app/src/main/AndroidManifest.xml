@@ -25,7 +25,8 @@
         </activity>
 
         <activity
-            android:name=".ui.RecipeStepSelectionActivity">
+            android:name=".ui.RecipeStepSelectionActivity"
+            android:launchMode="singleTop">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -35,6 +36,9 @@
 
         <activity
             android:name=".ui.RecipeStepViewActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.RecipeStepSelectionActivity"/>
         </activity>
 
     </application>

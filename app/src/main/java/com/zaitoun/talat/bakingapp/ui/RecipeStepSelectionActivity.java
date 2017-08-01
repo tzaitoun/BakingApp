@@ -2,8 +2,11 @@ package com.zaitoun.talat.bakingapp.ui;
 
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import com.zaitoun.talat.bakingapp.R;
 import com.zaitoun.talat.bakingapp.model.Ingredient;
@@ -17,19 +20,33 @@ import static com.zaitoun.talat.bakingapp.ui.RecipeStepSelectionAdapter.*;
 public class RecipeStepSelectionActivity extends AppCompatActivity
         implements RecipeStepSelectionFragment.RecipeStepSelectionCallback {
 
-    /* Keys for bundle */
+    /* Bundle Keys */
     public static final String INGREDIENTS_ARRAY_BUNDLE_KEY = "INGREDIENTS_BUNDLE_KEY";
     public static final String RECIPE_STEPS_ARRAY_BUNDLE_KEY = "RECIPE_STEPS_BUNDLE_KEY";
 
-    public static final String RECIPE_STEPS_ARRAY_INTENT_KEY = "RECIPE_STEPS_ARRAY_INTENT";
-    public static final String RECIPE_STEP_INTENT_KEY = "RECIPE_STEP_INTENT";
+    /* Intent Extras */
+    public static final String EXTRA_RECIPE_STEPS_ARRAY_VIEW_ACTIVITY
+            = "com.zaitoun.talat.bakingapp.RECIPE_STEPS_ARRAY_VIEW_ACTIVITY";
+
+    public static final String EXTRA_RECIPE_STEP_POSITION
+            = "com.zaitoun.talat.bakingapp.RECIPE_STEP_POSITION";
+
+    public static final String EXTRA_RECIPE_NAME_VIEW_ACTIVITY
+            = "com.zaitoun.talat.bakingapp.RECIPE_NAME_VIEW_ACTIVITY";
 
     private ArrayList<RecipeStep> mRecipeSteps;
+    private String mRecipeName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_step_selection);
+
+        ActionBar actionBar = this.getSupportActionBar();
+
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         /* Get the intent that started this activity */
         Intent intentThatStartedActivity = getIntent();
@@ -49,8 +66,12 @@ public class RecipeStepSelectionActivity extends AppCompatActivity
                 ArrayList<RecipeStep> recipeSteps =
                         intentThatStartedActivity.getParcelableArrayListExtra(EXTRA_RECIPE_STEPS_ARRAY);
 
-                /* Cache the recipe steps because we need to pass them to the next activity */
+                /* Cache the recipe steps and recipe name */
                 mRecipeSteps = recipeSteps;
+                mRecipeName = recipeName;
+
+                /* Set the title to the name of the recipe */
+                setTitle(recipeName);
 
                 /* Create a new fragment */
                 RecipeStepSelectionFragment fragment = new RecipeStepSelectionFragment();
@@ -78,9 +99,20 @@ public class RecipeStepSelectionActivity extends AppCompatActivity
         Intent intent = new Intent(RecipeStepSelectionActivity.this, RecipeStepViewActivity.class);
 
         /* Put the relevant data */
-        intent.putParcelableArrayListExtra(RECIPE_STEPS_ARRAY_INTENT_KEY, mRecipeSteps);
-        intent.putExtra(RECIPE_STEP_INTENT_KEY, position - RESERVED_VIEW_FOR_INGREDIENTS);
+        intent.putParcelableArrayListExtra(EXTRA_RECIPE_STEPS_ARRAY_VIEW_ACTIVITY, mRecipeSteps);
+        intent.putExtra(EXTRA_RECIPE_STEP_POSITION, position - RESERVED_VIEW_FOR_INGREDIENTS);
+        intent.putExtra(EXTRA_RECIPE_NAME_VIEW_ACTIVITY, mRecipeName);
 
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            NavUtils.navigateUpFromSameTask(this);
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

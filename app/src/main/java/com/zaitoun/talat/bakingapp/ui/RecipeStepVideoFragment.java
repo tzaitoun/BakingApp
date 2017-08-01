@@ -42,13 +42,16 @@ public class RecipeStepVideoFragment extends Fragment {
 
         Bundle bundle = getArguments();
 
-        if (bundle != null && bundle.containsKey(RECIPE_STEP_VIDEO_URL_KEY)) {
+        /* Check if the bundle is valid */
+        if (bundle != null && bundle.containsKey(RECIPE_STEP_VIDEO_URL_BUNDLE_KEY)) {
 
             /* Initialize the player view */
             mPlayerView = (SimpleExoPlayerView) view.findViewById(R.id.simple_exo_player_view);
 
-            String urlString = bundle.getString(RECIPE_STEP_VIDEO_URL_KEY);
+            /* Get the url string of the video */
+            String urlString = bundle.getString(RECIPE_STEP_VIDEO_URL_BUNDLE_KEY);
 
+            /* If it exists, play the video */
             if (urlString != null && !urlString.isEmpty()) {
 
                 Uri.Builder builder = Uri.parse(urlString).buildUpon();
@@ -56,11 +59,18 @@ public class RecipeStepVideoFragment extends Fragment {
 
                 initializePlayer(uri);
             }
+
+            else {
+                // do something
+            }
         }
 
         return view;
     }
 
+    /* Sets up the Exo player to play the video from the url.
+     * Author: Udacity Android Development Nanodegree Program
+     */
     public void initializePlayer(Uri mediaUri) {
 
         Context context = getContext();
@@ -80,6 +90,9 @@ public class RecipeStepVideoFragment extends Fragment {
         }
     }
 
+    /* Releases and dereferences the exo player when the fragment/activity is destroyed
+    *  Author: Udacity Android Development Nanodegree Program
+    */
     private void releasePlayer() {
         if (mExoPlayer != null) {
             mExoPlayer.stop();
