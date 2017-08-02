@@ -29,6 +29,7 @@ public class RecipeStepSelectionAdapter extends RecyclerView.Adapter<RecyclerVie
 
     private RecipeStepClickListener mRecipeStepClickListener;
 
+    /* Member variables to cache data */
     private ArrayList<Ingredient> mIngredients;
     private ArrayList<RecipeStep> mRecipeSteps;
     private Context mContext;

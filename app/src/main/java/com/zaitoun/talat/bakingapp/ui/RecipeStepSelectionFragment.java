@@ -18,24 +18,31 @@ import com.zaitoun.talat.bakingapp.model.RecipeStep;
 import java.util.ArrayList;
 
 import static android.support.v7.widget.RecyclerView.*;
+import static com.zaitoun.talat.bakingapp.ui.RecipeStepSelectionActivity.*;
 
-public class RecipeStepSelectionFragment extends Fragment implements RecipeStepSelectionAdapter.RecipeStepClickListener {
+/**
+ * A Fragment that displays a recipe's steps in a RecyclerView.
+ */
+public class RecipeStepSelectionFragment extends Fragment
+        implements RecipeStepSelectionAdapter.RecipeStepClickListener {
 
+    /* The Activity that implements the callback */
     private RecipeStepSelectionCallback mCallback;
 
     public RecipeStepSelectionFragment(){}
 
+    /* Allows the fragment to communicate back to the activity */
     public interface RecipeStepSelectionCallback {
         void onRecipeStepSelectionClick(int position);
     }
 
-    /* Override onAttach to make sure that the container activity has implemented the callback */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        // This makes sure that the host activity has implemented the callback interface
-        // If not, it throws an exception
+        /* This makes sure that the host activity has implemented the callback interface
+         * If not, it throws an exception
+         */
         try {
             mCallback = (RecipeStepSelectionCallback) context;
         } catch (ClassCastException e) {
@@ -48,7 +55,7 @@ public class RecipeStepSelectionFragment extends Fragment implements RecipeStepS
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        /* Inflate the layout for the fragment */
+        /* Inflate the layout of the fragment */
         final View view = inflater.inflate(R.layout.fragment_recipe_step_selection, container, false);
 
         /* Get a reference to the view */
@@ -58,20 +65,20 @@ public class RecipeStepSelectionFragment extends Fragment implements RecipeStepS
         LayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        /* Get the data pass from the activity */
+        /* Get the data passed from the activity */
         Bundle bundle = getArguments();
 
         /* Check that the data is valid */
         if (bundle != null) {
-            if (bundle.containsKey(RecipeStepSelectionActivity.INGREDIENTS_ARRAY_BUNDLE_KEY) &&
-                    bundle.containsKey(RecipeStepSelectionActivity.RECIPE_STEPS_ARRAY_BUNDLE_KEY)) {
+            if (bundle.containsKey(INGREDIENTS_ARRAY_BUNDLE_KEY) &&
+                    bundle.containsKey(RECIPE_STEPS_ARRAY_BUNDLE_KEY)) {
 
                 /* Get the data from the bundle */
                 ArrayList<Ingredient> ingredients =
-                        bundle.getParcelableArrayList(RecipeStepSelectionActivity.INGREDIENTS_ARRAY_BUNDLE_KEY);
+                        bundle.getParcelableArrayList(INGREDIENTS_ARRAY_BUNDLE_KEY);
 
                 ArrayList<RecipeStep> recipeSteps =
-                        bundle.getParcelableArrayList(RecipeStepSelectionActivity.RECIPE_STEPS_ARRAY_BUNDLE_KEY);
+                        bundle.getParcelableArrayList(RECIPE_STEPS_ARRAY_BUNDLE_KEY);
 
                 /* Create a new adapter and pass the data to it */
                 RecipeStepSelectionAdapter adapter =

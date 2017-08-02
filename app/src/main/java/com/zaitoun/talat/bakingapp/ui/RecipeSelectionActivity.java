@@ -24,14 +24,15 @@ import java.util.ArrayList;
 
 import static android.support.v7.widget.RecyclerView.*;
 
-/* This Activity is responsible for displaying the recipes from the network and allowing navigation
+/**
+ * This Activity is responsible for displaying the recipes from the network and allowing navigation
  * to a recipe's details when a recipe is selected.
  */
 public class RecipeSelectionActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<ArrayList<Recipe>>,
         RecipeSelectionAdapter.ItemOnClickListener {
 
-    /* Intent Extras */
+    /* Intent Extras: data to be passed to the started activity */
     public static final String EXTRA_RECIPE_NAME = "com.zaitoun.talat.bakingapp.RECIPE_NAME";
     public static final String EXTRA_INGREDIENTS_ARRAY = "com.zaitoun.talat.bakingapp.INGREDIENTS_ARRAY";
     public static final String EXTRA_RECIPE_STEPS_ARRAY = "com.zaitoun.talat.bakingapp.RECIPE_STEPS_ARRAY";

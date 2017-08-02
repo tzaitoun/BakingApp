@@ -11,8 +11,11 @@ import android.widget.TextView;
 
 import com.zaitoun.talat.bakingapp.R;
 
-import static com.zaitoun.talat.bakingapp.ui.RecipeStepViewActivity.*;
+import static com.zaitoun.talat.bakingapp.ui.RecipeStepSelectionActivity.RECIPE_STEP_DESCRIPTION_BUNDLE_KEY;
 
+/**
+ * A Fragment that displays a recipe step's description.
+ */
 public class RecipeStepDescriptionFragment extends Fragment {
 
     public RecipeStepDescriptionFragment() {}
@@ -21,7 +24,7 @@ public class RecipeStepDescriptionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        /* Inflate the view from the layout */
+        /* Inflate the layout of the fragment */
         final View view = inflater.inflate(R.layout.fragment_recipe_step_description, container, false);
 
         /* Get a reference to the view */
@@ -33,6 +36,7 @@ public class RecipeStepDescriptionFragment extends Fragment {
         if (bundle != null && bundle.containsKey(RECIPE_STEP_DESCRIPTION_BUNDLE_KEY)) {
             String description = bundle.getString(RECIPE_STEP_DESCRIPTION_BUNDLE_KEY);
 
+            /* Display the description in the TextView */
             recipeStepDescriptionTextView.setText(description);
         }
 

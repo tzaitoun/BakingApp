@@ -16,12 +16,15 @@ import java.util.ArrayList;
 
 import static com.zaitoun.talat.bakingapp.ui.RecipeStepSelectionActivity.*;
 
+/**
+ * An activity that displays the recipe step's video and description instructions.
+ * Portrait: Displays the video and description instructions.
+ * Landscape: Displays the video in full-screen.
+ * It also allows navigation to other recipe step details.
+ */
 public class RecipeStepViewActivity extends AppCompatActivity {
 
-    /* Bundle Keys */
-    public static final String RECIPE_STEP_VIDEO_URL_BUNDLE_KEY = "RECIPE_STEP_VIDEO_URL_BUNDLE_KEY";
-    public static final String RECIPE_STEP_DESCRIPTION_BUNDLE_KEY = "RECIPE_STEP_DESCRIPTION_BUNDLE_KEY";
-
+    /* Member variables for caching data */
     private ArrayList<RecipeStep> mRecipeSteps;
     private int mPosition;
 
@@ -36,136 +39,174 @@ public class RecipeStepViewActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        if (savedInstanceState == null) {
+        /* Get the intent that started the activity */
+        Intent intentThatStartedActivity = getIntent();
 
-            /* Get the intent that started the activity */
-            Intent intentThatStartedActivity = getIntent();
+        /* Check if the intent is valid */
+        if (intentThatStartedActivity != null) {
+            if (intentThatStartedActivity.hasExtra(EXTRA_RECIPE_STEPS_ARRAY_VIEW_ACTIVITY) &&
+                    intentThatStartedActivity.hasExtra(EXTRA_RECIPE_STEP_POSITION) &&
+                    intentThatStartedActivity.hasExtra(EXTRA_RECIPE_NAME_VIEW_ACTIVITY)) {
 
-            /* Check that it is valid */
-            if (intentThatStartedActivity != null) {
-                if (intentThatStartedActivity.hasExtra(EXTRA_RECIPE_STEPS_ARRAY_VIEW_ACTIVITY)
-                        && intentThatStartedActivity.hasExtra(EXTRA_RECIPE_STEP_POSITION)
-                        && intentThatStartedActivity.hasExtra(EXTRA_RECIPE_NAME_VIEW_ACTIVITY)) {
+                /* Get the data from the intent */
+                mRecipeSteps = intentThatStartedActivity
+                        .getParcelableArrayListExtra(EXTRA_RECIPE_STEPS_ARRAY_VIEW_ACTIVITY);
 
-                    /* Get the data from the intent */
-                    mRecipeSteps = intentThatStartedActivity
-                            .getParcelableArrayListExtra(EXTRA_RECIPE_STEPS_ARRAY_VIEW_ACTIVITY);
+                mPosition = intentThatStartedActivity.getIntExtra(EXTRA_RECIPE_STEP_POSITION, 0);
+                String recipeName = intentThatStartedActivity.getStringExtra(EXTRA_RECIPE_NAME_VIEW_ACTIVITY);
 
-                    mPosition = intentThatStartedActivity
-                            .getIntExtra(EXTRA_RECIPE_STEP_POSITION, 0);
+                /* Set the title of the activity to the recipe name */
+                setTitle(recipeName);
 
-                    String recipeName = intentThatStartedActivity
-                            .getStringExtra(EXTRA_RECIPE_NAME_VIEW_ACTIVITY);
+                /* Get the recipe step that we need to display it's details */
+                RecipeStep recipeStep = mRecipeSteps.get(mPosition);
 
-                    /* Set the title to the recipe name */
-                    setTitle(recipeName);
+                /* Create new fragments when there is no previous saved instance state */
+                if (savedInstanceState == null) {
 
-                    /* Get the recipe step */
-                    RecipeStep recipeStep = mRecipeSteps.get(mPosition);
-
-                    /* Get the fragment manager and add the fragments to the activity */
                     FragmentManager fragmentManager = getSupportFragmentManager();
 
-                    /* Create a new fragment for the video */
-                    RecipeStepVideoFragment recipeStepVideoFragment = new RecipeStepVideoFragment();
+                    /* If the phone is in landscape, then the video fragment will be fullscreen */
+                    if (getResources().getBoolean(R.bool.isLandscape)) {
 
-                    /* Pass the relevant data */
-                    String recipeStepVideoUrl = recipeStep.getVideoUrl();
-                    Bundle bundle = new Bundle();
-                    bundle.putString(RECIPE_STEP_VIDEO_URL_BUNDLE_KEY, recipeStepVideoUrl);
-                    recipeStepVideoFragment.setArguments(bundle);
+                        /* Create the fragment and add it to the activity */
+                        RecipeStepVideoFragment recipeStepVideoFragment =
+                                createRecipeStepVideoFragment(recipeStep);
 
-                    fragmentManager.beginTransaction()
-                            .add(R.id.recipe_step_video_container, recipeStepVideoFragment)
-                            .commit();
+                        fragmentManager.beginTransaction()
+                                .add(R.id.recipe_step_video_container, recipeStepVideoFragment)
+                                .commit();
+                    }
 
-                    /* Create a new fragment for the description */
-                    RecipeStepDescriptionFragment recipeStepDescriptionFragment
-                            = new RecipeStepDescriptionFragment();
+                    /* If the phone is in portrait, display both fragments */
+                    else {
 
-                    /* Pass the relevant data */
-                    String description = recipeStep.getDescription();
-                    Bundle descriptionBundle = new Bundle();
-                    descriptionBundle.putString(RECIPE_STEP_DESCRIPTION_BUNDLE_KEY, description);
-                    recipeStepDescriptionFragment.setArguments(descriptionBundle);
+                        /* Create the fragments and add them to the activity */
+                        RecipeStepVideoFragment recipeStepVideoFragment =
+                                createRecipeStepVideoFragment(recipeStep);
 
-                    fragmentManager.beginTransaction()
-                            .add(R.id.recipe_step_description_container, recipeStepDescriptionFragment)
-                            .commit();
+                        RecipeStepDescriptionFragment recipeStepDescriptionFragment =
+                                createRecipeStepDescriptionFragment(recipeStep);
+
+                        fragmentManager.beginTransaction()
+                                .add(R.id.recipe_step_video_container, recipeStepVideoFragment)
+                                .add(R.id.recipe_step_description_container, recipeStepDescriptionFragment)
+                                .commit();
+                    }
                 }
             }
         }
     }
 
-    /* When clicked, it shows the next recipe step */
+    /**
+     * This method navigates to the next step when the button is clicked.
+     * @param view: The button that was clicked.
+     */
     public void onNext(View view) {
-        if (mPosition < mRecipeSteps.size() - 1) {
-            mPosition++;
 
-            RecipeStep recipeStep = mRecipeSteps.get(mPosition);
+        /* Check that the phone is in portrait */
+        if (!getResources().getBoolean(R.bool.isLandscape)) {
 
-            FragmentManager fragmentManager = getSupportFragmentManager();
+            if (mPosition < mRecipeSteps.size() - 1) {
 
-            RecipeStepVideoFragment recipeStepVideoFragment = new RecipeStepVideoFragment();
+                /* Increment the position so that we can navigate to the next recipe step */
+                mPosition++;
 
-            /* Pass the relevant data */
-            String recipeStepVideoUrl = recipeStep.getVideoUrl();
-            Bundle bundle = new Bundle();
-            bundle.putString(RECIPE_STEP_VIDEO_URL_BUNDLE_KEY, recipeStepVideoUrl);
-            recipeStepVideoFragment.setArguments(bundle);
+                /* Get the recipe step at the new position */
+                RecipeStep recipeStep = mRecipeSteps.get(mPosition);
 
-            RecipeStepDescriptionFragment recipeStepDescriptionFragment
-                    = new RecipeStepDescriptionFragment();
+                FragmentManager fragmentManager = getSupportFragmentManager();
 
-            String description = recipeStep.getDescription();
-            Bundle descriptionBundle = new Bundle();
-            descriptionBundle.putString(RECIPE_STEP_DESCRIPTION_BUNDLE_KEY, description);
-            recipeStepDescriptionFragment.setArguments(descriptionBundle);
+                /* Create the fragments and replace the existing fragments with the new ones */
+                RecipeStepVideoFragment recipeStepVideoFragment =
+                        createRecipeStepVideoFragment(recipeStep);
 
-            fragmentManager.beginTransaction()
-                    .replace(R.id.recipe_step_video_container, recipeStepVideoFragment)
-                    .replace(R.id.recipe_step_description_container, recipeStepDescriptionFragment)
-                    .commit();
+                RecipeStepDescriptionFragment recipeStepDescriptionFragment =
+                        createRecipeStepDescriptionFragment(recipeStep);
+
+                fragmentManager.beginTransaction()
+                        .replace(R.id.recipe_step_video_container, recipeStepVideoFragment)
+                        .replace(R.id.recipe_step_description_container, recipeStepDescriptionFragment)
+                        .commit();
+            }
         }
     }
 
-    /* When clicked, it shows the previous recipe step */
+    /**
+     * This method navigates to the previous step when the button is clicked.
+     * @param view: The button that was clicked.
+     */
     public void onPrevious(View view) {
 
-        if (mPosition > 0) {
-            mPosition--;
+        /* Check that the phone is in portrait */
+        if (!getResources().getBoolean(R.bool.isLandscape)) {
 
-            RecipeStep recipeStep = mRecipeSteps.get(mPosition);
+            if (mPosition > 0) {
 
-            FragmentManager fragmentManager = getSupportFragmentManager();
+                /* Decrement the position so that we can navigate to the previous recipe step */
+                mPosition--;
 
-            RecipeStepVideoFragment recipeStepVideoFragment = new RecipeStepVideoFragment();
+                /* Get the recipe step at the new position */
+                RecipeStep recipeStep = mRecipeSteps.get(mPosition);
 
-            /* Pass the relevant data */
-            String recipeStepVideoUrl = recipeStep.getVideoUrl();
-            Bundle bundle = new Bundle();
-            bundle.putString(RECIPE_STEP_VIDEO_URL_BUNDLE_KEY, recipeStepVideoUrl);
-            recipeStepVideoFragment.setArguments(bundle);
+                FragmentManager fragmentManager = getSupportFragmentManager();
 
-            RecipeStepDescriptionFragment recipeStepDescriptionFragment
-                    = new RecipeStepDescriptionFragment();
+                /* Create the fragments and replace the existing fragments with the new ones */
+                RecipeStepVideoFragment recipeStepVideoFragment =
+                        createRecipeStepVideoFragment(recipeStep);
 
-            String description = recipeStep.getDescription();
-            Bundle descriptionBundle = new Bundle();
-            descriptionBundle.putString(RECIPE_STEP_DESCRIPTION_BUNDLE_KEY, description);
-            recipeStepDescriptionFragment.setArguments(descriptionBundle);
+                RecipeStepDescriptionFragment recipeStepDescriptionFragment =
+                        createRecipeStepDescriptionFragment(recipeStep);
 
-            fragmentManager.beginTransaction()
-                    .replace(R.id.recipe_step_video_container, recipeStepVideoFragment)
-                    .replace(R.id.recipe_step_description_container, recipeStepDescriptionFragment)
-                    .commit();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.recipe_step_video_container, recipeStepVideoFragment)
+                        .replace(R.id.recipe_step_description_container, recipeStepDescriptionFragment)
+                        .commit();
+            }
         }
+    }
+
+    /**
+     * This method creates a RecipeStepVideoFragment.
+     * @param recipeStep: The recipe step that we need to display it's video.
+     */
+    private RecipeStepVideoFragment createRecipeStepVideoFragment(RecipeStep recipeStep) {
+
+        /* Create a new RecipeStepVideoFragment */
+        RecipeStepVideoFragment fragment = new RecipeStepVideoFragment();
+
+        /* Pass the recipe step video url to the fragment */
+        String recipeStepVideoUrl = recipeStep.getVideoUrl();
+        Bundle bundle = new Bundle();
+        bundle.putString(RECIPE_STEP_VIDEO_URL_BUNDLE_KEY, recipeStepVideoUrl);
+        fragment.setArguments(bundle);
+
+        return fragment;
+    }
+
+    /**
+     * This method creates a RecipeStepDescriptionFragment.
+     * @param recipeStep: The recipe step that we need to display it's description.
+     */
+    private RecipeStepDescriptionFragment createRecipeStepDescriptionFragment(RecipeStep recipeStep) {
+
+        /* Create a new RecipeStepDescriptionFragment */
+        RecipeStepDescriptionFragment fragment = new RecipeStepDescriptionFragment();
+
+        /* Pass the recipe step description to the fragment */
+        String description = recipeStep.getDescription();
+        Bundle bundle = new Bundle();
+        bundle.putString(RECIPE_STEP_DESCRIPTION_BUNDLE_KEY, description);
+        fragment.setArguments(bundle);
+
+        return fragment;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         int id = item.getItemId();
-        // When the home button is pressed, take the user back to the MainActivity
+
         if (id == android.R.id.home) {
             NavUtils.navigateUpFromSameTask(this);
         }
