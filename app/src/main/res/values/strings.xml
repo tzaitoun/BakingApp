@@ -5,6 +5,8 @@
     <string name="no_connection">No Internet Connection</string>
     <string name="data_error">An Error Occurred</string>
 
+    <string name="no_media_found">No Media Found</string>
+
     <string name="action_refresh">Refresh</string>
 
     <string name="ingredients">Ingredients</string>

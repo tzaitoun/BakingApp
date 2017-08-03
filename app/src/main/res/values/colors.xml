@@ -5,4 +5,7 @@
     <color name="colorAccent">#d81b60</color>
 
     <color name="colorDivider">#e0e0e0</color>
+
+    <color name="colorPlayer">#000000</color>
+    <color name="colorPlayerText">#eeeeee</color>
 </resources>

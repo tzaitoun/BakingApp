@@ -58,6 +58,11 @@ public class RecipeStepViewActivity extends AppCompatActivity {
                 /* Set the title of the activity to the recipe name */
                 setTitle(recipeName);
 
+                /* Hide the action bar when the device is in landscape */
+                if (getResources().getBoolean(R.bool.isLandscape) && actionBar != null) {
+                    actionBar.hide();
+                }
+
                 /* Get the recipe step that we need to display it's details */
                 RecipeStep recipeStep = mRecipeSteps.get(mPosition);
 

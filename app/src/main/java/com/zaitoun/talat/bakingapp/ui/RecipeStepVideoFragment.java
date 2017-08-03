@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -50,6 +51,8 @@ public class RecipeStepVideoFragment extends Fragment {
             /* Get a reference to the view */
             mPlayerView = (SimpleExoPlayerView) view.findViewById(R.id.simple_exo_player_view);
 
+            TextView mTextView = (TextView) view.findViewById(R.id.tv_no_media);
+
             /* Get the url string of the video */
             String urlString = bundle.getString(RECIPE_STEP_VIDEO_URL_BUNDLE_KEY);
 
@@ -61,8 +64,10 @@ public class RecipeStepVideoFragment extends Fragment {
                 initializePlayer(uri);
             }
 
+            /* If it doesn't, show a message */
             else {
-                /* do something */
+                mPlayerView.setVisibility(View.GONE);
+                mTextView.setVisibility(View.VISIBLE);
             }
         }
 
