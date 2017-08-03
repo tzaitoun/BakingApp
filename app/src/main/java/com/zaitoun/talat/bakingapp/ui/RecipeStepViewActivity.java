@@ -1,6 +1,7 @@
 package com.zaitoun.talat.bakingapp.ui;
 
 import android.content.Intent;
+import android.os.PersistableBundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
@@ -23,6 +24,8 @@ import static com.zaitoun.talat.bakingapp.ui.RecipeStepSelectionActivity.*;
  * It also allows navigation to other recipe step details.
  */
 public class RecipeStepViewActivity extends AppCompatActivity {
+
+    public static final String RECIPE_STEP_POSITION_KEY = "RECIPE_STEP_POSITION";
 
     /* Member variables for caching data */
     private ArrayList<RecipeStep> mRecipeSteps;
@@ -101,6 +104,18 @@ public class RecipeStepViewActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(RECIPE_STEP_POSITION_KEY, mPosition);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mPosition = savedInstanceState.getInt(RECIPE_STEP_POSITION_KEY);
     }
 
     /**
