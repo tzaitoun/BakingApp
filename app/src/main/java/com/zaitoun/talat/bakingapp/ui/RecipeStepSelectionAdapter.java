@@ -119,9 +119,19 @@ public class RecipeStepSelectionAdapter extends RecyclerView.Adapter<RecyclerVie
 
             for (int i = 0; i < mIngredients.size(); i++) {
 
-                Ingredient ingredient = mIngredients.get(i);
-                ingredientsString += ingredient.getQuantity() + " " + ingredient.getMeasurementUnit()
-                        + " " + ingredient.getIngredientName() + "\n";
+                if (i == mIngredients.size() - 1) {
+                    Ingredient ingredient = mIngredients.get(i);
+                    ingredientsString += ingredient.getQuantity() + " " +
+                            (ingredient.getMeasurementUnit()).toLowerCase()
+                            + " " + ingredient.getIngredientName();
+                }
+
+                else {
+                    Ingredient ingredient = mIngredients.get(i);
+                    ingredientsString += ingredient.getQuantity() + " " +
+                            (ingredient.getMeasurementUnit()).toLowerCase()
+                            + " " + ingredient.getIngredientName() + "\n";
+                }
             }
 
             mIngredientsListTextView.setText(ingredientsString);
@@ -141,8 +151,17 @@ public class RecipeStepSelectionAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         public void bind(int position) {
-            mRecipeStepShortDescriptionTextView.setText(position + ") " + mRecipeSteps
-                    .get(position - RESERVED_VIEW_FOR_INGREDIENTS).getShortDescription());
+
+            /* The index of the recipe steps array */
+            int index = position - RESERVED_VIEW_FOR_INGREDIENTS;
+
+            if (index == 0) {
+                mRecipeStepShortDescriptionTextView.setText(mRecipeSteps.get(index).getShortDescription());
+            }
+
+            else {
+                mRecipeStepShortDescriptionTextView.setText(index + ". " + mRecipeSteps.get(index).getShortDescription());
+            }
         }
 
         @Override

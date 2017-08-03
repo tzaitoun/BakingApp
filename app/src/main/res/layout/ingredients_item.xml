@@ -4,26 +4,32 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingRight="16dp"
-    android:paddingLeft="16dp"
-    android:paddingTop="16dp">
+    android:layout_height="wrap_content">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/ingredients"
-        android:textSize="22sp"
-        android:paddingBottom="8dp"/>
+        android:textSize="20sp"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_ingredients_list"/>
+        android:id="@+id/tv_ingredients_list"
+        android:layout_marginBottom="16dp"
+        android:textSize="16sp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"/>
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/colorDivider"/>
+        android:background="@color/colorDivider"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"/>
 
 </LinearLayout>
