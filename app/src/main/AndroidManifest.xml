@@ -13,7 +13,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".ui.RecipeSelectionActivity"
             android:launchMode="singleTop">
@@ -23,24 +22,32 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ui.RecipeStepSelectionActivity"
             android:launchMode="singleTop">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.RecipeSelectionActivity"/>
-
+                android:value=".ui.RecipeSelectionActivity" />
         </activity>
-
-        <activity
-            android:name=".ui.RecipeStepViewActivity">
+        <activity android:name=".ui.RecipeStepViewActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.RecipeStepSelectionActivity"/>
+                android:value=".ui.RecipeStepSelectionActivity" />
         </activity>
 
+        <receiver android:name=".IngredientsWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/ingredients_widget_info" />
+        </receiver>
+
+        <service
+            android:name=".IngredientsService">
+        </service>
     </application>
 
 </manifest>
