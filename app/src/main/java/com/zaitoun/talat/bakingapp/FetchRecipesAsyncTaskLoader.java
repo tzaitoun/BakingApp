@@ -77,6 +77,9 @@ public class FetchRecipesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<Recip
                 editor.putInt(context.getString(R.string.position), 0);
             }
 
+            /* Store the length of the recipes array */
+            editor.putInt(context.getString(R.string.length), mRecipes.size());
+
             /* Write each recipe json string to shared preferences */
             for (int i = 0; i < mRecipes.size(); i++) {
                 String jsonRecipe = gson.toJson(mRecipes.get(i));

@@ -4,16 +4,14 @@
     <!-- Error handling strings-->
     <string name="no_connection">No Internet Connection</string>
     <string name="data_error">An Error Occurred</string>
-
     <string name="no_media_found">No Media Found</string>
 
     <string name="action_refresh">Refresh</string>
 
     <string name="ingredients">Ingredients</string>
 
+    <!-- SharedPreferences Related Strings -->
     <string name="preferences_key">com.zaitoun.talat.bakingapp.PREFERENCES_KEY</string>
     <string name="position">position</string>
-
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
+    <string name="length">length</string>
 </resources>
