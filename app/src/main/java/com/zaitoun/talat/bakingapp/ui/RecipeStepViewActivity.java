@@ -1,7 +1,6 @@
 package com.zaitoun.talat.bakingapp.ui;
 
 import android.content.Intent;
-import android.os.PersistableBundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
@@ -74,33 +73,17 @@ public class RecipeStepViewActivity extends AppCompatActivity {
 
                     FragmentManager fragmentManager = getSupportFragmentManager();
 
-                    /* If the phone is in landscape, then the video fragment will be fullscreen */
-                    if (getResources().getBoolean(R.bool.isLandscape)) {
+                    /* Create the fragments and add them to the activity */
+                    RecipeStepVideoFragment recipeStepVideoFragment =
+                            createRecipeStepVideoFragment(recipeStep);
 
-                        /* Create the fragment and add it to the activity */
-                        RecipeStepVideoFragment recipeStepVideoFragment =
-                                createRecipeStepVideoFragment(recipeStep);
+                    RecipeStepDescriptionFragment recipeStepDescriptionFragment =
+                            createRecipeStepDescriptionFragment(recipeStep);
 
-                        fragmentManager.beginTransaction()
-                                .add(R.id.recipe_step_video_container, recipeStepVideoFragment)
-                                .commit();
-                    }
-
-                    /* If the phone is in portrait, display both fragments */
-                    else {
-
-                        /* Create the fragments and add them to the activity */
-                        RecipeStepVideoFragment recipeStepVideoFragment =
-                                createRecipeStepVideoFragment(recipeStep);
-
-                        RecipeStepDescriptionFragment recipeStepDescriptionFragment =
-                                createRecipeStepDescriptionFragment(recipeStep);
-
-                        fragmentManager.beginTransaction()
-                                .add(R.id.recipe_step_video_container, recipeStepVideoFragment)
-                                .add(R.id.recipe_step_description_container, recipeStepDescriptionFragment)
-                                .commit();
-                    }
+                    fragmentManager.beginTransaction()
+                            .add(R.id.recipe_step_video_container, recipeStepVideoFragment)
+                            .add(R.id.recipe_step_description_container, recipeStepDescriptionFragment)
+                            .commit();
                 }
             }
         }

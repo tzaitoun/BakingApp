@@ -14,4 +14,11 @@
         android:id="@+id/recipe_step_video_container">
     </FrameLayout>
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/recipe_step_description_container"
+        android:visibility="gone">
+    </FrameLayout>
+
 </LinearLayout>
