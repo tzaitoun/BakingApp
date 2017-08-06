@@ -31,6 +31,9 @@ import static com.zaitoun.talat.bakingapp.ui.RecipeStepSelectionActivity.RECIPE_
  */
 public class RecipeStepVideoFragment extends Fragment {
 
+    public static final String PLAYER_POSITION_KEY = "PLAYER_POSITION";
+    public static final String PLAYER_STATE_KEY = "PLAYER_STATE";
+
     private SimpleExoPlayerView mPlayerView;
     private SimpleExoPlayer mExoPlayer;
 
@@ -113,5 +116,37 @@ public class RecipeStepVideoFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         releasePlayer();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        /* Save the player position and state*/
+        if (mExoPlayer != null) {
+            long position = mExoPlayer.getCurrentPosition();
+            outState.putLong(PLAYER_POSITION_KEY, position);
+
+            int playerState = mExoPlayer.getPlaybackState();
+
+            if (playerState == SimpleExoPlayer.STATE_READY) {
+                outState.putBoolean(PLAYER_STATE_KEY, mExoPlayer.getPlayWhenReady());
+            }
+        }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        /* Get the player position */
+        if (savedInstanceState != null && mExoPlayer != null) {
+            mExoPlayer.seekTo(savedInstanceState.getLong(PLAYER_POSITION_KEY));
+
+            /* If the video was paused before rotation, pause it, else just play it */
+            if (!savedInstanceState.getBoolean(PLAYER_STATE_KEY)) {
+                mExoPlayer.setPlayWhenReady(false);
+            }
+        }
     }
 }
