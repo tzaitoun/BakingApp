@@ -37,6 +37,9 @@ public class RecipeStepVideoFragment extends Fragment {
     private SimpleExoPlayerView mPlayerView;
     private SimpleExoPlayer mExoPlayer;
 
+    private String mVideoUriString;
+    private long mPosition;
+
     public RecipeStepVideoFragment() {}
 
     @Nullable
@@ -58,6 +61,8 @@ public class RecipeStepVideoFragment extends Fragment {
 
             /* Get the url string of the video */
             String urlString = bundle.getString(RECIPE_STEP_VIDEO_URL_BUNDLE_KEY);
+
+            mVideoUriString = urlString;
 
             /* If it exists, play the video */
             if (urlString != null && !urlString.isEmpty()) {
@@ -112,10 +117,42 @@ public class RecipeStepVideoFragment extends Fragment {
         }
     }
 
+    /* Releases player when either the activity get destroyed or when the activity is not in
+     * the foreground (pressing home button for example).
+     */
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onStop() {
+        super.onStop();
+        /* Before releasing th player, get the position so if the user comes back, we can start it from there */
+        if (mExoPlayer != null) {
+            mPosition = mExoPlayer.getCurrentPosition();
+        }
         releasePlayer();
+    }
+
+    /* Initializes the player if the user pressed the home button and came back to the activity */
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        /* Check if mExoPlayer does not exist: 1) If the user presses home button, then the player
+         * would be released and null. 2) If the Exoplayer was not created in onCreateView because
+         * there was no valid uri, so it would be null. These are the only 2 cases where it should
+         * enter the first if statement.
+         */
+        if (mExoPlayer == null) {
+
+            /* If it exists, play the video */
+            if (mVideoUriString != null && !mVideoUriString.isEmpty()) {
+
+                Uri.Builder builder = Uri.parse(mVideoUriString).buildUpon();
+                Uri uri = builder.build();
+                initializePlayer(uri);
+                /* Move to the position before home button was pressed and pause the video */
+                mExoPlayer.seekTo(mPosition);
+                mExoPlayer.setPlayWhenReady(false);
+            }
+        }
     }
 
     @Override
